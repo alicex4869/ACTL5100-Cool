@@ -427,7 +427,7 @@ Data used are provided by SOA: [2022 SOA Challenge]( https://www.soa.org/researc
 
 ---
 
-Overall, the team we selected has the expected probability of success of about 70% which is not bad. Although assembling the national team seemly will not earn so much money the potential economic growth that the construction of such a competitive team will bring is a more significant consideration.
+测试Overall, the team we selected has the expected probability of success of about 70% which is not bad. Although assembling the national team seemly will not earn so much money the potential economic growth that the construction of such a competitive team will bring is a more significant consideration.
 
 ---
 
