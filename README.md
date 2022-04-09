@@ -21,45 +21,45 @@
       <a href="#Assumptions">Assumptions</a>
     </li>
     <li>
-      <a href="#Team Selection">Team Selection</a>
+      <a href="#Team-Selection">Team Selection</a>
       <ol>
         <li><a href="#Structure">Structure</a></li>
-        <li><a href="#Data Preparation">Data Preparation</a></li>
-        <li><a href="#Entropy weighted method">Entropy weighted method</a></li>
-        <li><a href="#Modelling and team selection">Modelling and team selection</a></li>       
+        <li><a href="#Data-Preparation">Data Preparation</a></li>
+        <li><a href="#Entropy-weighted-method">Entropy weighted method</a></li>
+        <li><a href="#Modelling-and-team-selection">Modelling and team selection</a></li>       
       </ol>
     </li>
     <li>
-      <a href="#Expense and Revenue">Expense and Revenue</a>
+      <a href="#Expense-and-Revenue">Expense and Revenue</a>
       <ol>
         <li><a href="#Expense">Expense</a></li>
         <li><a href="#Revenue">Revenue</a></li>
-        <li><a href="#Net income">Net income</a></li>
+        <li><a href="#Net-income">Net income</a></li>
       </ol>
     </li>
     <li>
-      <a href="#Economic Effects">Economic Effects</a>
+      <a href="#Economic-Effects">Economic Effects</a>
       <ol>
-        <li><a href="#Impact on other industries">Impact on other industries</a></li>
-        <li><a href="#International impact and net exports">International impact and net exports</a></li>
+        <li><a href="#Impact-on-other-industries">Impact on other industries</a></li>
+        <li><a href="#International-impact-and-net-exports">International impact and net exports</a></li>
       </ol>
     </li>
     <li>
-      <a href="#Implementation plan">Implementation plan</a>
+      <a href="#Implementation-plan">Implementation plan</a>
     </li>
     <li>
-      <a href="#Risk and Risk mitigation">Risk and Risk mitigation</a>
+      <a href="#Risk-and-Risk-mitigation">Risk and Risk mitigation</a>
       <ol>
-        <li><a href="#biased data">biased data</a></li>
-        <li><a href="#misjudged expense">misjudged expense</a></li>
-        <li><a href="#sensitivity test of annual percentage rate and discount rate">sensitivity test of annual percentage rate and discount rate</a></li>
+        <li><a href="#biased-data">biased data</a></li>
+        <li><a href="#misjudged-expense">misjudged expense</a></li>
+        <li><a href="#sensitivity-test-of-annual-percentage-rate-and-discount-rate">sensitivity test of annual percentage rate and discount rate</a></li>
       </ol>
     </li>
     <li>
-      <a href="#Data and Data Limitation">Data and Data Limitation</a>
+      <a href="#Data-and-Data-Limitation">Data and Data Limitation</a>
       <ol>
-        <li><a href="#Data used">Data used</a></li>
-        <li><a href="#Data limitation">Data limitation</a></li>
+        <li><a href="#Data-used">Data used</a></li>
+        <li><a href="#Data-limitation">Data limitation</a></li>
       </ol>
     </li>
   </ol>
