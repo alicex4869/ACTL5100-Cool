@@ -1,0 +1,610 @@
+---
+title: "Codes for Report"
+author: "Team Cool"
+date: "3/20/2022"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,eval = FALSE)
+```
+
+```{r library, warning=FALSE}
+library("readxl")
+library("dplyr")
+library("stringr")
+library(tidyverse)
+library(Hmisc)
+library(VIM)
+library(glmnet)
+library("MASS")
+library(ROCR)
+library("randomForest")
+```
+
+
+```{r import data, message=FALSE, warning=FALSE,tidy=TRUE,results='hide'}
+
+#Tournament 
+tour_shoot<-read_excel("/Users/apple/Desktop/ACTL5100 Project/2022-student-research-case-study-player-data.xlsx",sheet = "Tournament Shooting",col_names = TRUE,skip = 11,col_types = c(rep("text",3), rep("numeric",14), "text", rep("numeric",7)))
+
+tour_pass<-read_excel("/Users/apple/Desktop/ACTL5100 Project/2022-student-research-case-study-player-data.xlsx",sheet = "Tournament Passing",col_names = TRUE,skip = 11)
+
+tour_defense<-read_excel("/Users/apple/Desktop/ACTL5100 Project/2022-student-research-case-study-player-data.xlsx",sheet = "Tournament Defense",col_names = TRUE,skip = 11)
+
+tour_goalkeep<-read_excel("/Users/apple/Desktop/ACTL5100 Project/2022-student-research-case-study-player-data.xlsx",sheet = "Tournament Goalkeeping",col_names = TRUE,skip = 11)
+
+#salary
+salary20<-read_excel("/Users/apple/Desktop/ACTL5100 Project/2022-student-research-case-study-player-data.xlsx",sheet = "2020 Salaries",col_names = TRUE,skip = 11)
+
+salary21<-read_excel("/Users/apple/Desktop/ACTL5100 Project/2022-student-research-case-study-player-data.xlsx",sheet = "2021 Salaries",col_names = TRUE,skip = 11)
+
+#Tournament ranks for national teams
+rank20<-read_excel("/Users/apple/Desktop/ACTL5100 Project/2022-student-research-case-study-player-data.xlsx",sheet = "Tournament Results",col_names = TRUE,range = "B11:C27")
+colnames(rank20)<-c("rank20","country")
+
+rank21<-read_excel("/Users/apple/Desktop/ACTL5100 Project/2022-student-research-case-study-player-data.xlsx",sheet = "Tournament Results",col_names = TRUE,range = "E11:F35")
+colnames(rank21)<-c("rank21","country")
+
+#League
+lea_shoot<-read_excel("/Users/apple/Desktop/ACTL5100 Project/2022-student-research-case-study-player-data.xlsx",sheet = "League Shooting",col_names = TRUE,skip = 11)
+
+lea_pass<-read_excel("/Users/apple/Desktop/ACTL5100 Project/2022-student-research-case-study-player-data.xlsx",sheet = "League Passing",col_names = TRUE,skip = 11)
+
+lea_defense<-read_excel("/Users/apple/Desktop/ACTL5100 Project/2022-student-research-case-study-player-data.xlsx",sheet = "League Defense",col_names = TRUE,skip = 11)
+
+lea_goalkeep<-read_excel("/Users/apple/Desktop/ACTL5100 Project/2022-student-research-case-study-player-data.xlsx",sheet = "League Goalkeeping",col_names = TRUE,skip = 11)
+
+
+```
+
+```{r missing data, message=FALSE, warning=FALSE,tidy=TRUE,results='hide'}
+colSums(is.na(tour_shoot)) #large amount of missing
+colSums(is.na(tour_pass)) #Total Cmp% 5,Short Cmp% 13,Medium Cmp% 21,Long Cmp% 45
+colSums(is.na(tour_defense)) #Vs Dribbles Tkl% 135, Pressures % 26
+colSums(is.na(tour_goalkeep)) #Performance Save% 3,Performance CS% 5,Kicks Save% 88
+colSums(is.na(salary20)) #no missing
+colSums(is.na(salary21)) #no missing
+
+#plot missing data
+
+tour_shoot %>%
+  visdat::vis_miss(warn_large_data = FALSE)
+
+tour_pass %>%
+  visdat::vis_miss(warn_large_data = FALSE)
+
+tour_defense %>%
+  visdat::vis_miss(warn_large_data = FALSE)
+
+tour_goalkeep %>%
+  visdat::vis_miss(warn_large_data = FALSE)
+#remove penalty kicks save%
+
+tour_shoot%>%count(Year==2020) #tour_shoot: 488 data in 2021, 1527 data in 2020
+tour_goalkeep%>%count(Year==2020) #tour_goalkeep: 25 data in 2021, 104 data in 2020
+#tour_defense,tour_pass only have data for 2021
+#only use 2021 data in tour_shoot, combine dataset with tour_pass and tour_defense:build a model
+#tour_goalkeep: build a model(include 2020 and 2021 data)
+
+tour_shoot21<-tour_shoot%>%filter(Year==2021)
+tour_shoot20<-tour_shoot%>%filter(Year==2020)
+
+tour_goalkeep21<-tour_goalkeep%>%filter(Year==2021)
+tour_goalkeep20<-tour_goalkeep%>%filter(Year==2020)
+
+colSums(is.na(tour_shoot21)) 
+tour_shoot21 %>%
+  visdat::vis_miss(warn_large_data = FALSE)
+
+colSums(is.na(tour_goalkeep21)) 
+tour_goalkeep21 %>%
+  visdat::vis_miss(warn_large_data = FALSE)
+```
+
+# remove variables with high percentage of missing and check the correlations
+## tour_shoot: 
+remove:League,year
+
+Correlation matrix to check multi-collinearity and find representative ones:
+
+* Age-Born(remove Born)
+* Standard Sh-Standard Sh/90(remove Standard Sh)
+* Standard SoT-Standard SoT/90(remove Standard SoT)
+* Standard G/Sh-Standard G/SoT(remove Standard G/SoT)
+* Expected xG-Expected npxG(remove expected npxG)
+* Expected G-xG - Expected np:G-xG(remove Expected G-xG )
+
+
+## tour_pass:
+remove: League,year
+
+Correlation matrix to check multi-collineary and find representative ones:
+
+* remove Born
+* Total Att~Total Cmp (remove Total Att)
+* Short Att~Short Cmp (remove Short Att)
+* Medium Att~Medium Cmp (remove Medium Att)
+* Long Att~Long Cmp (remove Long Att)
+* A-xA ~ Axt remove A-xA
+
+## tour_denfense
+remove: league, year
+
+correlation matrix check: 
+
+* remove Born
+* tackles Tkl ~ tackles def 3rd+ tackles mid 3rd+tackles att 3rd (remove tackles Tkl)
+* Pressure Press ~ Pressure def 3rd+ Pressure mid 3rd+Pressure att 3rd (remove * Pressure Press)
+* remove Blocks Blocks (similar reason)
+
+ 
+## tour_goalkeep
+remove: league, born,year
+
+correlation matrix check:
+
+* Playing Time MP
+* Playing Time Starts  
+* Playing Time Min
+* Performance GA 
+* performance cs%
+* Penalty Kicks PKA
+* Penalty Kicks Save% (60% missing)
+
+```{r message=FALSE, warning=FALSE,tidy=TRUE,results='hide',eval=FALSE}
+#tour_shoot
+cor_shoot<-cor(tour_shoot21[,-c(1,2,3,18,19)],use = "pairwise.complete.obs")
+corrplot::corrplot(cor_shoot)
+
+#tour_pass
+cor_pass<-cor(tour_pass[,-c(1,2,3,29,30)],use = "pairwise.complete.obs")
+corrplot::corrplot(cor_pass)
+
+#tour_defense
+cor_defense<-cor(tour_defense[,-c(1,2,3,30,31)],use = "pairwise.complete.obs")
+corrplot::corrplot(cor_defense)
+
+cor(tour_defense$`Vs Dribbles Tkl`/tour_defense$`Vs Dribbles Att`,tour_defense$`Vs Dribbles Tkl%`,use = "pairwise.complete.obs")
+
+cor(tour_defense$`Pressures Succ`/tour_defense$`Pressures Press`,tour_defense$`Pressures %`,use = "pairwise.complete.obs")
+
+#tour_goalkeep
+cor_goalkeep<-cor(tour_goalkeep[,-c(1,2,3,25)],use = "pairwise.complete.obs")
+corrplot::corrplot(cor_goalkeep)
+
+cor(tour_goalkeep$`Performance Saves`/tour_goalkeep$`Performance SoTA`,tour_goalkeep$`Performance Save%`,use = "pairwise.complete.obs")
+
+```
+
+```{r message=FALSE, warning=FALSE,tidy=TRUE,results='hide'}
+
+#shoot
+#remove some variables(highly linearly correlated)
+tour_shoot1<-tour_shoot21[,-c(5,8,9,14,18,19,22,24)]
+colSums(is.na(tour_shoot1))
+
+#imputation with KNN method(optional)
+set.seed(111)
+tour_shoot1.impute<-kNN(tour_shoot1,weightDist = TRUE,imp_var = FALSE)
+
+
+
+#pass
+#remove some useless variables
+tour_pass1<-tour_pass[,-c(5,8,13,16,19,23,29,30)]
+colSums(is.na(tour_pass1))
+
+#imputated dataset(optional)
+#impute the Total/Short/Medium/Long Cmp% by definition
+tour_pass.impute<-tour_pass
+tour_pass.impute$`Total Cmp%`<-ifelse(is.na(tour_pass.impute$`Total Cmp%`)==1,tour_pass.impute$`Total Cmp`/tour_pass.impute$`Total Att`,tour_pass.impute$`Total Cmp%`)
+
+tour_pass.impute$`Short Cmp%`<-ifelse(is.na(tour_pass.impute$`Short Cmp%`)==1,tour_pass.impute$`Short Cmp`/tour_pass.impute$`Short Att`,tour_pass.impute$`Short Cmp%`)
+
+tour_pass.impute$`Medium Cmp%`<-ifelse(is.na(tour_pass.impute$`Medium Cmp%`)==1,tour_pass.impute$`Medium Cmp`/tour_pass.impute$`Medium Att`,tour_pass.impute$`Medium Cmp%`)
+
+tour_pass.impute$`Long Cmp%`<-ifelse(is.na(tour_pass.impute$`Long Cmp%`)==1,tour_pass.impute$`Long Cmp`/tour_pass.impute$`Long Att`,tour_pass.impute$`Long Cmp%`)
+tour_pass.impute<-tour_pass.impute[,-c(5,8,13,16,19,23,29,30)]
+
+
+
+
+
+#defense
+#check the pos of corresponding player in tour_shoot
+missing_player<-tour_defense %>% filter(is.na(tour_defense$Pos)==1)
+pos<-tour_shoot1 %>% filter(Player==unlist(missing_player[1])) #GK
+tour_defense$Pos<-ifelse(is.na(tour_defense$Pos)==1,unlist(pos[3]),tour_defense$Pos)
+
+#remove useless data
+tour_defense1<-tour_defense[,-c(5,7,16,22,30,31)]
+colSums(is.na(tour_defense1))
+
+#imputed dataset(optional)
+#impute the missing values for Vs Dribble Tackles and Pressures % by definitions
+tour_defense.impute<-tour_defense
+tour_defense.impute$`Vs Dribbles Tkl%`<-ifelse(is.na(tour_defense.impute$`Vs Dribbles Tkl%`)==1,tour_defense.impute$`Vs Dribbles Tkl`/tour_defense.impute$`Vs Dribbles Att`,tour_defense.impute$`Vs Dribbles Tkl%`)
+
+tour_defense.impute$`Pressures %`<-ifelse(is.na(tour_defense.impute$`Pressures %`)==1,tour_defense.impute$`Pressures Succ`/tour_defense.impute$`Pressures Press`,tour_defense.impute$`Pressures %`)
+
+tour_defense.impute<-tour_defense.impute[,-c(5,7,16,22,30,31)]
+colSums(is.na(tour_defense.impute))
+
+
+
+
+#goalkeep
+
+#remove useless data
+
+tour_goalkeep1<-tour_goalkeep21[,-c(5,6,7,8,10,16,19,21,24,25,26)]
+colSums(is.na(tour_goalkeep1))
+
+#imputed dataset(optional)
+#impute useful variable: Performance Save%
+tour_goalkeep.impute<-tour_goalkeep21
+tour_goalkeep.impute$`Performance Save%`<-ifelse(is.na(tour_goalkeep.impute$`Performance Save%`)==1,tour_goalkeep.impute$`Performance Saves`/tour_goalkeep.impute$`Performance SoTA`,tour_goalkeep.impute$`Performance Save%`)
+tour_goalkeep.impute<-tour_goalkeep.impute[,-c(5,6,7,8,10,19,21,24,25,26)]
+colSums(is.na(tour_goalkeep.impute))
+```
+
+
+## datasets:
+tour_shoot1
+tour_pass1
+tour_defense1
+tour_goalkeep1
+
+```{r entropy weighted + regression, message=FALSE, warning=FALSE,tidy=TRUE,results='hide',eval=FALSE}
+
+tour_defense1[,13] <- -tour_defense1[,13]
+tour_goalkeep1[,c(11,13,15)] <- -tour_goalkeep1[,c(11,13,15)]
+
+tour_shoot.FW1 <- tour_shoot1 %>% filter(grepl("FW", Pos)) %>% group_by(Nation) %>%
+  summarise(across(`90s`:`Expected np:G-xG`, ~mean(.x, na.rm = TRUE)))
+
+tour_pass.MF1 <- tour_pass1 %>% filter(grepl("MF", Pos)) %>% group_by(Nation) %>%
+  summarise(across(`90s`:`Prog`, ~mean(.x, na.rm = TRUE)))
+
+tour_pass.FW1 <- tour_pass1 %>% filter(grepl("FW", Pos)) %>% group_by(Nation) %>%
+  summarise(across(`90s`:`Prog`, ~mean(.x, na.rm = TRUE)))
+
+tour_pass.DF1 <- tour_pass1 %>% filter(grepl("DF", Pos)) %>% group_by(Nation) %>%
+  summarise(across(`90s`:`Prog`, ~mean(.x, na.rm = TRUE)))
+
+tour_defense.DF1 <- tour_defense1 %>% filter(grepl("DF", Pos)) %>% group_by(Nation) %>%
+  summarise(across(`90s`:`Err`, ~mean(.x, na.rm = TRUE)))
+
+tour_defense.MF1 <- tour_defense1 %>% filter(grepl("MF", Pos)) %>% group_by(Nation) %>%
+  summarise(across(`90s`:`Err`, ~mean(.x, na.rm = TRUE)))
+
+tour_goalkeep.GK1 <- tour_goalkeep1 %>% group_by(Nation) %>% filter(grepl("GK", Pos)) %>%
+  summarise(across(`Playing Time 90s`:`Penalty Kicks PKm`, ~mean(.x, na.rm = TRUE)))
+
+
+## standardise
+
+tour_shoot.FW.sd <- tour_shoot.FW1 %>%
+  summarise(Nation, across(`90s`:`Expected np:G-xG`, ~(.x-min(.x))/(max(.x)-min(.x))))
+
+tour_pass.MF.sd <- tour_pass.MF1 %>%
+  summarise(Nation, across(`90s`:`Prog`, ~(.x-min(.x))/(max(.x)-min(.x))))
+
+tour_pass.FW.sd <- tour_pass.FW1 %>%
+  summarise(Nation, across(`90s`:`Prog`, ~(.x-min(.x))/(max(.x)-min(.x))))
+
+tour_pass.DF.sd <- tour_pass.DF1 %>%
+  summarise(Nation, across(`90s`:`Prog`, ~(.x-min(.x))/(max(.x)-min(.x))))
+
+tour_defense.DF.sd <- tour_defense.DF1 %>%
+  summarise(Nation, across(`90s`:`Err`, ~(.x-min(.x))/(max(.x)-min(.x))))
+
+tour_defense.MF.sd <- tour_defense.MF1 %>%
+  summarise(Nation, across(`90s`:`Err`, ~(.x-min(.x))/(max(.x)-min(.x))))
+
+tour_goalkeep.GK.sd <- tour_goalkeep.GK1 %>%
+  summarise(Nation, across(`Playing Time 90s`:`Penalty Kicks PKm`, ~(.x-min(.x))/(max(.x)-min(.x))))
+
+
+## weights
+
+tour_shoot.FW.w <- tour_shoot.FW.sd %>%
+  summarise(Nation, across(`90s`:`Expected np:G-xG`, ~(.x/sum(.x)))) %>%
+  summarise(Nation, across(`90s`:`Expected np:G-xG`, ~(.x*log(.x)))) %>%
+  summarise(across(`90s`:`Expected np:G-xG`, ~-sum(.x, na.rm = T)*log(nrow(tour_shoot.FW1))^(-1))) %>%
+  summarise(across(`90s`:`Expected np:G-xG`, ~(1-.x)/(ncol(tour_shoot.FW1[,-1])-sum(.x))))
+
+tour_pass.MF.w <- tour_pass.MF.sd %>%
+  summarise(Nation, across(`90s`:`Prog`, ~(.x/sum(.x)))) %>%
+  summarise(Nation, across(`90s`:`Prog`, ~(.x*log(.x)))) %>%
+  summarise(across(`90s`:`Prog`, ~-sum(.x, na.rm = T)*log(nrow(tour_pass.MF1))^(-1))) %>%
+  summarise(across(`90s`:`Prog`, ~(1-.x)/(ncol(tour_pass.MF1[,-1])-sum(.x))))
+
+tour_pass.FW.w <- tour_pass.FW.sd %>%
+  summarise(Nation, across(`90s`:`Prog`, ~(.x/sum(.x)))) %>%
+  summarise(Nation, across(`90s`:`Prog`, ~(.x*log(.x)))) %>%
+  summarise(across(`90s`:`Prog`, ~-sum(.x, na.rm = T)*log(nrow(tour_pass.FW1))^(-1))) %>%
+  summarise(across(`90s`:`Prog`, ~(1-.x)/(ncol(tour_pass.FW1[,-1])-sum(.x))))
+
+tour_pass.DF.w <- tour_pass.DF.sd %>%
+  summarise(Nation, across(`90s`:`Prog`, ~(.x/sum(.x)))) %>%
+  summarise(Nation, across(`90s`:`Prog`, ~(.x*log(.x)))) %>%
+  summarise(across(`90s`:`Prog`, ~-sum(.x, na.rm = T)*log(nrow(tour_pass.DF1))^(-1))) %>%
+  summarise(across(`90s`:`Prog`, ~(1-.x)/(ncol(tour_pass.DF1[,-1])-sum(.x))))
+
+tour_defense.DF.w <- tour_defense.DF.sd %>%
+  summarise(Nation, across(`90s`:`Err`, ~(.x/sum(.x)))) %>%
+  summarise(Nation, across(`90s`:`Err`, ~(.x*log(.x)))) %>%
+  summarise(across(`90s`:`Err`, ~-sum(.x, na.rm = T)*log(nrow(tour_defense.DF1))^(-1))) %>%
+  summarise(across(`90s`:`Err`, ~(1-.x)/(ncol(tour_defense.DF1[,-1])-sum(.x))))
+
+tour_defense.MF.w <- tour_defense.MF.sd %>%
+  summarise(Nation, across(`90s`:`Err`, ~(.x/sum(.x)))) %>%
+  summarise(Nation, across(`90s`:`Err`, ~(.x*log(.x)))) %>%
+  summarise(across(`90s`:`Err`, ~-sum(.x, na.rm = T)*log(nrow(tour_defense.MF1))^(-1))) %>%
+  summarise(across(`90s`:`Err`, ~(1-.x)/(ncol(tour_defense.MF1[,-1])-sum(.x))))
+
+tour_goalkeep.GK.w <- tour_goalkeep.GK.sd %>%
+  summarise(Nation, across(`Playing Time 90s`:`Penalty Kicks PKm`, ~(.x/sum(.x)))) %>%
+  summarise(Nation, across(`Playing Time 90s`:`Penalty Kicks PKm`, ~(.x*log(.x)))) %>%
+  summarise(across(`Playing Time 90s`:`Penalty Kicks PKm`, ~-sum(.x, na.rm = T)*log(nrow(tour_goalkeep.GK1))^(-1))) %>%
+  summarise(across(`Playing Time 90s`:`Penalty Kicks PKm`, ~(1-.x)/(ncol(tour_goalkeep.GK1[,-1])-sum(.x))))
+
+
+## combine 6 dimensions
+
+tour_shoot.FW2 <- as.matrix(tour_shoot.FW.sd[,-1]) %*% t(tour_shoot.FW.w)
+tour_shoot.FW <- as.data.frame(cbind(tour_shoot.FW1$Nation, tour_shoot.FW2))
+colnames(tour_shoot.FW) <- c("Nation", "ShootingFW")
+
+tour_pass.MF2 <- as.matrix(tour_pass.MF.sd[,-1]) %*% t(tour_pass.MF.w)
+tour_pass.MF <- as.data.frame(cbind(tour_pass.MF1$Nation, tour_pass.MF2))
+colnames(tour_pass.MF) <- c("Nation", "PassingMF")
+
+tour_pass.FW2 <- as.matrix(tour_pass.FW.sd[,-1]) %*% t(tour_pass.FW.w)
+tour_pass.FW <- as.data.frame(cbind(tour_pass.FW1$Nation, tour_pass.FW2))
+colnames(tour_pass.FW) <- c("Nation", "PassingFW")
+
+tour_pass.DF2 <- as.matrix(tour_pass.DF.sd[,-1]) %*% t(tour_pass.DF.w)
+tour_pass.DF <- as.data.frame(cbind(tour_pass.DF1$Nation, tour_pass.DF2))
+colnames(tour_pass.DF) <- c("Nation", "PassingDF")
+
+tour_defense.DF2 <- as.matrix(tour_defense.DF.sd[,-1]) %*% t(tour_defense.DF.w)
+tour_defense.DF <- as.data.frame(cbind(tour_defense.DF1$Nation, tour_defense.DF2))
+colnames(tour_defense.DF) <- c("Nation", "DefenseDF")
+
+tour_defense.MF2 <- as.matrix(tour_defense.MF.sd[,-1]) %*% t(tour_defense.MF.w)
+tour_defense.MF <- as.data.frame(cbind(tour_defense.MF1$Nation, tour_defense.MF2))
+colnames(tour_defense.MF) <- c("Nation", "DefenseMF")
+
+tour_goalkeep.GK2 <- as.matrix(tour_goalkeep.GK.sd[,-1]) %*% t(tour_goalkeep.GK.w)
+tour_goalkeep.GK <- as.data.frame(cbind(tour_goalkeep.GK1$Nation, tour_goalkeep.GK2))
+colnames(tour_goalkeep.GK) <- c("Nation", "GoalkeepingGK")
+
+tour2021.all <- merge(tour_shoot.FW, tour_pass.MF, by = "Nation") %>%
+  merge(tour_pass.FW, by = "Nation") %>% merge(tour_pass.DF, by = "Nation") %>%
+  merge(tour_defense.DF, by = "Nation") %>% merge(tour_defense.MF, by = "Nation") %>%
+  merge(tour_goalkeep.GK, by = "Nation")
+
+tour_rank21 <- merge(tour2021.all, rank21, by.x = "Nation", by.y = "country")
+
+## regression analysis
+
+tour_rank21[,9] <- if_else(tour_rank21$rank21 > 10, 0, 1)
+tour_rank21$`ShootingFW` <- as.numeric(tour_rank21$`ShootingFW`)
+tour_rank21$`PassingMF` <- as.numeric(tour_rank21$`PassingMF`)
+tour_rank21$`PassingFW` <- as.numeric(tour_rank21$`PassingFW`)
+tour_rank21$`PassingDF` <- as.numeric(tour_rank21$`PassingDF`)
+tour_rank21$`DefenseDF` <- as.numeric(tour_rank21$`DefenseDF`)
+tour_rank21$`DefenseMF` <- as.numeric(tour_rank21$`DefenseMF`)
+tour_rank21$`GoalkeepingGK` <- as.numeric(tour_rank21$`GoalkeepingGK`)
+
+log1_rank21 <- glm(rank21 ~ ., family = "binomial", data = tour_rank21[,-1])
+summary(log1_rank21)
+stepAIC(log1_rank21)
+
+rf1_rank21 <- randomForest(rank21 ~. , tour_rank21[,-1], method="rf", mtry=3, ntree=50)
+varImpPlot(rf1_rank21, main = "Feature Importance")
+
+N <- nrow(tour_rank21)
+Acc_log <- Acc_log.shrink <- Acc_rf <- vector(length=N)
+
+for(i in 1:N){
+  train_set <- tour_rank21[-i,-1]
+  vali_set <- tour_rank21[i,-1]
+  
+  # logistic regression
+  log_rank21 <- glm(rank21 ~ .-`PassingMF`-`DefenseDF`, family = "binomial",
+                    data = train_set)
+  pred_log <- if_else(predict(log_rank21, vali_set, type = "response")>0.5,1,0)
+  
+  # logistic regression + shrinkage
+  log.shrink_rank21 <- cv.glmnet(as.matrix(train_set[,-8]), train_set$rank21,
+                                 family="binomial", alpha=0.5, nfolds = N)
+  pred_log.shrink <- if_else(predict(log.shrink_rank21, s=log.shrink_rank21$lambda.min,
+                                     newx=as.matrix(vali_set[,-8]), type="response")>0.5,1,0)
+  
+  # random forest
+  # rf_rank21 <- randomForest(rank21 ~. , train_set, method="rf", mtry=3, ntree=50)
+  # pred_rf <- if_else(predict(rf_rank21, vali_set)>0.5,1,0)
+  
+  Acc_log[i] <- if_else(vali_set[,8] == pred_log, 1, 0)
+  Acc_log.shrink[i] <- if_else(vali_set[,8] == pred_log.shrink, 1, 0)
+  #Acc_rf[i] <- if_else(vali_set[,8] == pred_rf, 1, 0)
+  
+}
+
+sum(Acc_log)/N
+sum(Acc_log.shrink)/N
+# sum(Acc_rf)/N
+
+
+```
+
+```{r team selection, message=FALSE, warning=FALSE,tidy=TRUE,results='hide',eval=FALSE}
+
+lea_shoot1 <- lea_shoot[,-c(6,9,10,15,21,22)]
+lea_pass1 <- lea_pass[,-c(6,9,14,17,20,24)]
+lea_defense1 <- lea_defense[,-c(6,8,17,23)]
+lea_goalkeep1 <- lea_goalkeep[,-c(6,7,8,9,11,17,20,22,25)]
+
+lea_defense1[,14] <- -lea_defense1[,14]
+lea_goalkeep1[,c(12,14,16)] <- -lea_goalkeep1[,c(12,14,16)]
+
+lea_shoot.FW1 <- lea_shoot1 %>% filter(grepl("FW", Pos)) %>% group_by(Player) %>%
+  summarise(across(`90s`:`Expected np:G-xG`, ~mean(.x, na.rm = TRUE))) %>%
+  na.omit()
+
+lea_pass.MF1 <- lea_pass1 %>% filter(grepl("MF", Pos)) %>% group_by(Player) %>%
+  summarise(across(`90s`:`Prog`, ~mean(.x, na.rm = TRUE))) %>%
+  na.omit()
+
+lea_pass.FW1 <- lea_pass1 %>% filter(grepl("FW", Pos)) %>% group_by(Player) %>%
+  summarise(across(`90s`:`Prog`, ~mean(.x, na.rm = TRUE))) %>%
+  na.omit()
+
+lea_pass.DF1 <- lea_pass1 %>% filter(grepl("DF", Pos)) %>% group_by(Player) %>%
+  summarise(across(`90s`:`Prog`, ~mean(.x, na.rm = TRUE))) %>%
+  na.omit()
+
+lea_defense.DF1 <- lea_defense1 %>% filter(grepl("DF", Pos)) %>% group_by(Player) %>%
+  summarise(across(`90s`:`Err`, ~mean(.x, na.rm = TRUE))) %>%
+  na.omit()
+
+lea_defense.MF1 <- lea_defense1 %>% filter(grepl("MF", Pos)) %>% group_by(Player) %>%
+  summarise(across(`90s`:`Err`, ~mean(.x, na.rm = TRUE))) %>%
+  na.omit()
+
+lea_goalkeep.GK1 <- lea_goalkeep1 %>% filter(grepl("GK", Pos)) %>% group_by(Player) %>%
+  summarise(across(`Playing Time 90s`:`Penalty Kicks PKm`, ~mean(.x, na.rm = TRUE))) %>%
+  na.omit()
+
+## standardise
+
+lea_shoot.FW.sd <- lea_shoot.FW1 %>%
+  summarise(Player, across(`90s`:`Expected np:G-xG`, ~(.x-min(.x))/(max(.x)-min(.x))))
+
+lea_pass.MF.sd <- lea_pass.MF1 %>%
+  summarise(Player, across(`90s`:`Prog`, ~(.x-min(.x))/(max(.x)-min(.x))))
+
+lea_pass.FW.sd <- lea_pass.FW1 %>%
+  summarise(Player, across(`90s`:`Prog`, ~(.x-min(.x))/(max(.x)-min(.x))))
+
+lea_pass.DF.sd <- lea_pass.DF1 %>%
+  summarise(Player, across(`90s`:`Prog`, ~(.x-min(.x))/(max(.x)-min(.x))))
+
+lea_defense.DF.sd <- lea_defense.DF1 %>%
+  summarise(Player, across(`90s`:`Err`, ~(.x-min(.x))/(max(.x)-min(.x))))
+
+lea_defense.MF.sd <- lea_defense.MF1 %>%
+  summarise(Player, across(`90s`:`Err`, ~(.x-min(.x))/(max(.x)-min(.x))))
+
+lea_goalkeep.GK.sd <- lea_goalkeep.GK1 %>%
+  summarise(Player, across(`Playing Time 90s`:`Penalty Kicks PKm`, ~(.x-min(.x))/(max(.x)-min(.x))))
+
+## score for each player
+
+lea_shoot.FW2 <- as.matrix(lea_shoot.FW.sd[,-1]) %*% t(tour_shoot.FW.w)
+lea_shoot.FW3 <- as.data.frame(cbind(lea_shoot.FW1$Player, lea_shoot.FW2))
+colnames(lea_shoot.FW3) <- c("Player", "ShootingFW")
+lea_shoot.FW <- cbind(filter(lea_shoot1, grepl("FW", Pos))[match(lea_shoot.FW3$Player, filter(lea_shoot1, grepl("FW", Pos))$Player), c(2,3)], lea_shoot.FW3)
+
+lea_pass.MF2 <- as.matrix(lea_pass.MF.sd[,-1]) %*% t(tour_pass.MF.w)
+lea_pass.MF3 <- as.data.frame(cbind(lea_pass.MF1$Player, lea_pass.MF2))
+colnames(lea_pass.MF3) <- c("Player", "PassingMF")
+lea_pass.MF <- cbind(filter(lea_pass1, grepl("MF", Pos))[match(lea_pass.MF3$Player, filter(lea_pass1, grepl("MF", Pos))$Player), c(2,3)], lea_pass.MF3)
+
+lea_pass.FW2 <- as.matrix(lea_pass.FW.sd[,-1]) %*% t(tour_pass.FW.w)
+lea_pass.FW3 <- as.data.frame(cbind(lea_pass.FW1$Player, lea_pass.FW2))
+colnames(lea_pass.FW3) <- c("Player", "PassingFW")
+lea_pass.FW <- cbind(filter(lea_pass1, grepl("FW", Pos))[match(lea_pass.FW3$Player, filter(lea_pass1, grepl("FW", Pos))$Player), c(2,3)], lea_pass.FW3)
+
+lea_pass.DF2 <- as.matrix(lea_pass.DF.sd[,-1]) %*% t(tour_pass.DF.w)
+lea_pass.DF3 <- as.data.frame(cbind(lea_pass.DF1$Player, lea_pass.DF2))
+colnames(lea_pass.DF3) <- c("Player", "PassingDF")
+lea_pass.DF <- cbind(filter(lea_pass1, grepl("DF", Pos))[match(lea_pass.DF3$Player, filter(lea_pass1, grepl("DF", Pos))$Player), c(2,3)], lea_pass.DF3)
+
+lea_defense.DF2 <- as.matrix(lea_defense.DF.sd[,-1]) %*% t(tour_defense.DF.w)
+lea_defense.DF3 <- as.data.frame(cbind(lea_defense.DF1$Player, lea_defense.DF2))
+colnames(lea_defense.DF3) <- c("Player", "DefenseDF")
+lea_defense.DF <- cbind(filter(lea_defense1, grepl("DF", Pos))[match(lea_defense.DF3$Player, filter(lea_defense1, grepl("DF", Pos))$Player), c(2,3)], lea_defense.DF3)
+
+lea_defense.MF2 <- as.matrix(lea_defense.MF.sd[,-1]) %*% t(tour_defense.MF.w)
+lea_defense.MF3 <- as.data.frame(cbind(lea_defense.MF1$Player, lea_defense.MF2))
+colnames(lea_defense.MF3) <- c("Player", "DefenseMF")
+lea_defense.MF <- cbind(filter(lea_defense1, grepl("MF", Pos))[match(lea_defense.MF3$Player, filter(lea_defense1, grepl("MF", Pos))$Player), c(2,3)], lea_defense.MF3)
+
+lea_goalkeep.GK2 <- as.matrix(lea_goalkeep.GK.sd[,-1]) %*% t(tour_goalkeep.GK.w)
+lea_goalkeep.GK3 <- as.data.frame(cbind(lea_goalkeep.GK1$Player, lea_goalkeep.GK2))
+colnames(lea_goalkeep.GK3) <- c("Player", "GoalkeepingGK")
+lea_goalkeep.GK <- cbind(filter(lea_goalkeep1, grepl("GK", Pos))[match(lea_goalkeep.GK3$Player, filter(lea_goalkeep1, grepl("GK", Pos))$Player), c(2,3)], lea_goalkeep.GK3)
+
+# choosing players
+
+lea_shoot.FW$`ShootingFW` <- as.numeric(lea_shoot.FW$`ShootingFW`)
+lea_pass.MF$`PassingMF` <- as.numeric(lea_pass.MF$`PassingMF`)
+lea_pass.FW$`PassingFW` <- as.numeric(lea_pass.FW$`PassingFW`)
+lea_pass.DF$`PassingDF` <- as.numeric(lea_pass.DF$`PassingDF`)
+lea_defense.DF$`DefenseDF` <- as.numeric(lea_defense.DF$`DefenseDF`)
+lea_defense.MF$`DefenseMF` <- as.numeric(lea_defense.MF$`DefenseMF`)
+lea_goalkeep.GK$`GoalkeepingGK` <- as.numeric(lea_goalkeep.GK$`GoalkeepingGK`)
+
+tour_rarita.FW1 <- lea_shoot.FW %>% filter(ShootingFW > quantile(ShootingFW, 0.95)) %>% filter(Nation == "Rarita")
+tour_rarita.DF1 <- lea_pass.DF %>% filter(PassingDF > quantile(PassingDF, 0.95)) %>% filter(Nation == "Rarita")
+tour_rarita.MF1 <- lea_defense.MF %>% filter(DefenseMF > quantile(DefenseMF, 0.95)) %>% filter(Nation == "Rarita")
+tour_rarita.GK1 <- lea_goalkeep.GK %>% filter(GoalkeepingGK > quantile(GoalkeepingGK, 0.95)) %>% filter(Nation == "Rarita")
+
+tour_rarita.FW2 <- rbind(tour_rarita.FW1, lea_shoot.FW %>% arrange(desc(ShootingFW)) %>% slice(1:6))
+tour_rarita.FW <- merge(tour_rarita.FW2, lea_pass.FW)
+tour_rarita.DF <- merge(tour_rarita.DF1, lea_defense.DF)
+tour_rarita.MF2 <- rbind(tour_rarita.MF1, lea_defense.MF %>% arrange(desc(DefenseMF)) %>% slice(1:3))
+tour_rarita.MF <- merge(tour_rarita.MF2, lea_pass.MF)
+tour_rarita.GK <- rbind(tour_rarita.GK1, lea_goalkeep.GK %>% arrange(desc(GoalkeepingGK)) %>% slice(1))
+
+# team
+team_rarita <- rbind(tour_rarita.FW[,c(1:3)], tour_rarita.DF[,c(1:3)], tour_rarita.MF[,c(1:3)],
+                     tour_rarita.GK[,c(1:3)])
+
+team_rarita.score <- data.frame(Nation = "Rarita", ShootingFW = mean(tour_rarita.FW$ShootingFW),
+                   PassingMF = mean(tour_rarita.MF$PassingMF),
+                   PassingDF = mean(tour_rarita.DF$PassingDF),
+                   PassingFW = mean(tour_rarita.FW$PassingFW),
+                   DefenseMF = mean(tour_rarita.MF$DefenseMF),
+                   DefenseDF = mean(tour_rarita.DF$DefenseDF),
+                   GoalkeepingGK = mean(tour_rarita.GK$GoalkeepingGK))
+
+# prob of top 10
+log_fit <- glm(rank21 ~ `ShootingFW`+`PassingFW`+`PassingDF`+`DefenseMF`+`GoalkeepingGK`,
+               family = "binomial", data = tour_rank21[,-1]) 
+summary(log_fit)
+pred_rarita <- predict(log_fit, team_rarita.score, type = "response")
+pred_rarita
+
+
+```
+```{r salaries, message=FALSE, warning=FALSE,tidy=TRUE,results='hide',eval=FALSE}
+salary<-left_join(team_rarita,salary21,by=c("Player"="Player Name"))
+
+add<-salary %>% filter(is.na(`Annualized Salary`)==1) %>% dplyr::select(Player,Nation,Pos) %>% left_join(salary20,by=c("Player"="Player Name"))
+
+add$`Annualized Salary`<-add$`Annualized Salary`*1.02
+
+salary1<-salary[-which(is.na(salary$`Annualized Salary`)),]
+salary1<-rbind(add,salary1) %>% arrange(by="Pos")
+salary1<-salary1[,-c(6,7)]
+
+playercost<-salary1 %>% mutate(cost=ifelse(Nation=="Rarita",`Annualized Salary`,`Annualized Salary`*1.1))
+playercost
+
+#totol player expense
+totalcost_player<-sum(playercost$cost)
+
+#foreign player expense
+totalcost_foreign_player<-playercost %>% filter(Nation!="Rarita") %>% summarise(total=sum(cost))
+
+rent<-playercost %>% filter(Nation!="Rarita") %>% summarise(rent=sum(cost)-sum(`Annualized Salary`))
+```
+
+
+

@@ -94,16 +94,77 @@ First we standardized both league and tournament data. Then we separate 4 origin
 
 Furthermore, there are numerous minor measurement features in each main metric which could significantly increase the model complexity. Also, our team are lack of experiences in soccer which the subjective weighted methods are not suitable in this case. Thus, we applied Entropy Weight Method (EWM) to determines the objective index weight for each minor measurements according to the dispersion degree and calculate an overall score for each major metric. Moreover, since the success of soccer team is based on the performance of every player, therefore, we take the average score for each team by position for further analysis instead of solely considering the personal performance. 
 
+
+
 After the data manipulation procedures, the dimension of measurement for each nation are reduced to 7 variables that explain the tournament rank:
-![](/Users/yifanxiao/Desktop/tournament_rank.png)
+
+| **Nation**              | **ShootingFW** | **PassingMF** | **PassingFW** | **PassingDF** | **DefenseDF** | **DefenseMF** | **GoalkeepingGK** | **rank21** |
+| ----------------------- | -------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ----------------- | ---------- |
+| Bernepamar              | 0.0457         | 0.0223        | 0.0301        | 0.0263        | 0.0277        | 0.0263        | 0.0298            | 8          |
+| Byasier Pujan           | 0.0235         | 0.0331        | 0.0425        | 0.0281        | 0.0268        | 0.0234        | 0.0349            | 15         |
+| Djipines                | 0.0221         | 0.0174        | 0.0262        | 0.0160        | 0.0284        | 0.0313        | 0.0293            | 16         |
+| Eastern Niasland        | 0.0163         | 0.0150        | 0.0178        | 0.0097        | 0.0348        | 0.0405        | 0.0308            | 23         |
+| Eastern Sleboube        | 0.0242         | 0.0179        | 0.0294        | 0.0143        | 0.0257        | 0.0382        | 0.0236            | 19         |
+| Esia                    | 0.0278         | 0.0362        | 0.0322        | 0.0409        | 0.0228        | 0.0224        | 0.0213            | 14         |
+| Galamily                | 0.0244         | 0.0188        | 0.0214        | 0.0269        | 0.0240        | 0.0190        | 0.0286            | 7          |
+| Giumle Lizeibon         | 0.0321         | 0.0483        | 0.0398        | 0.0257        | 0.0333        | 0.0306        | 0.0255            | 10         |
+| Greri Landmoslands      | 0.0414         | 0.0439        | 0.0468        | 0.0389        | 0.0284        | 0.0214        | 0.0282            | 11         |
+| Ledian                  | 0.0098         | 0.0203        | 0.0212        | 0.0342        | 0.0269        | 0.0224        | 0.0294            | 18         |
+| Leoneku Guidisia        | 0.0160         | 0.0193        | 0.0098        | 0.0081        | 0.0337        | 0.0377        | 0.0346            | 17         |
+| Manlisgamncent          | 0.0341         | 0.0285        | 0.0297        | 0.0194        | 0.0241        | 0.0194        | 0.0202            | 13         |
+| Mico                    | 0.0345         | 0.0351        | 0.0370        | 0.0312        | 0.0222        | 0.0263        | 0.0304            | 4          |
+| New Uwi                 | 0.0209         | 0.0074        | 0.0187        | 0.0099        | 0.0353        | 0.0261        | 0.0251            | 20         |
+| Nganion                 | 0.0399         | 0.0559        | 0.0465        | 0.0507        | 0.0188        | 0.0296        | 0.0288            | 3          |
+| Ngoque Blicri           | 0.0218         | 0.0283        | 0.0149        | 0.0195        | 0.0304        | 0.0256        | 0.0271            | 21         |
+| Nkasland Cronestan      | 0.0203         | 0.0198        | 0.0378        | 0.0363        | 0.0319        | 0.0236        | 0.0141            | 22         |
+| People's Land of Maneau | 0.0248         | 0.0277        | 0.0270        | 0.0427        | 0.0248        | 0.0277        | 0.0370            | 2          |
+| Quewenia                | 0.0290         | 0.0162        | 0.0227        | 0.0275        | 0.0296        | 0.0338        | 0.0276            | 5          |
+| Sobianitedrucy          | 0.0371         | 0.0306        | 0.0294        | 0.0400        | 0.0232        | 0.0233        | 0.0286            | 1          |
+| Southern Ristan         | 0.0452         | 0.0219        | 0.0172        | 0.0283        | 0.0308        | 0.0103        | 0.0372            | 6          |
+| Varijitri Isles         | 0.0170         | 0.0327        | 0.0455        | 0.0278        | 0.0317        | 0.0282        | 0.0235            | 24         |
+| Xikong                  | 0.0237         | 0.0077        | 0.0164        | 0.0074        | 0.0160        | 0.0249        | 0.0299            | 12         |
 
 > Example of entropy weighted method applied to forward shooting:
 > Standardized data:
-> ![](/Users/yifanxiao/Desktop/Standardized_ShootingFW.png)
+>
+> | **Nation**              | **90s** | **Gls** | **Standard SoT%** | **Standard Sh/90** | **Standard SoT/90** | **Standard G/Sh** | **Standard Dist** | **Performance PK** | **Performance PKatt** | **Standard FK** | **Expected xG** | **Expected npxG/Sh** | **Expected np:G-xG** |
+> | ----------------------- | ------- | ------- | ----------------- | ------------------ | ------------------- | ----------------- | ----------------- | ------------------ | --------------------- | --------------- | --------------- | -------------------- | -------------------- |
+> | Bernepamar              | 0.3863  | 1.0000  | 0.7421            | 0.5864             | 0.5633              | 0.8514            | 0.2488            | 0.1542             | 0.2121                | 0.3663          | 1.0000          | 1.0000               | 0.8408               |
+> | Byasier Pujan           | 0.1853  | 0.2510  | 0.2649            | 0.3343             | 0.1456              | 0.2950            | 0.4183            | 0.7761             | 0.6263                | 0.1123          | 0.2422          | 0.0168               | 0.6025               |
+> | Djipines                | 0.4961  | 0.1522  | 0.5864            | 0.1739             | 0.1912              | 0.4894            | 0.0000            | 0.1578             | 0.2641                | 0.0405          | 0.3026          | 0.5754               | 0.4698               |
+> | Dosqaly                 | 0.3312  | 0.2672  | 0.8437            | 0.6017             | 0.4792              | 0.3017            | 0.5222            | 0.4900             | 0.5000                | 0.3136          | 0.5075          | 0.0279               | 0.2744               |
+> | Eastern Niasland        | 0.0523  | 0.0830  | 0.4115            | 0.2293             | 0.1025              | 0.5112            | 0.2782            | 0.3560             | 0.1380                | 0.2305          | 0.0000          | 0.1816               | 0.5406               |
+> | Eastern Sleboube        | 0.3478  | 0.2272  | 0.7699            | 0.0219             | 0.1339              | 0.4291            | 0.4792            | 0.6340             | 0.3333                | 0.3002          | 0.1983          | 0.1732               | 0.5512               |
+> | Esia                    | 0.2773  | 0.2438  | 0.5837            | 0.2682             | 0.2694              | 0.5642            | 0.3439            | 0.2600             | 0.1515                | 0.4079          | 0.3912          | 0.7263               | 0.3642               |
+> | Galamily                | 0.3601  | 0.2516  | 0.5741            | 0.4972             | 0.3034              | 0.2825            | 0.2953            | 0.2537             | 0.4394                | 0.2361          | 0.4231          | 0.1955               | 0.2713               |
+> | Giumle Lizeibon         | 0.1541  | 0.4538  | 1.0000            | 0.7230             | 1.0000              | 0.6225            | 0.1610            | 0.2897             | 0.1919                | 0.0803          | 0.4459          | 0.2913               | 0.5928               |
+> | Greri Landmoslands      | 0.3590  | 0.3115  | 0.6787            | 0.8630             | 0.5677              | 0.3855            | 0.1950            | 0.8922             | 0.9798                | 0.3857          | 0.8655          | 0.5447               | 0.0000               |
+> | Ledian                  | 0.0429  | 0.0172  | 0.0000            | 0.1351             | 0.0000              | 0.0000            | 0.4623            | 0.3470             | 0.0000                | 0.2167          | 0.1358          | 0.0000               | 0.4694               |
+> | Leoneku Guidisia        | 0.0000  | 0.1385  | 0.2594            | 0.1519             | 0.0980              | 0.2793            | 0.5604            | 0.0464             | 0.3131                | 0.1123          | 0.1388          | 0.3445               | 0.4746               |
+> | Manlisgamncent          | 0.2505  | 0.6858  | 0.6075            | 0.3947             | 0.3552              | 0.8883            | 0.2291            | 0.3505             | 0.2054                | 0.1517          | 0.6243          | 0.5028               | 1.0000               |
+> | Mico                    | 0.5732  | 0.4875  | 0.6820            | 0.6816             | 0.4810              | 0.5794            | 0.3861            | 0.1915             | 0.3182                | 0.3303          | 0.4049          | 0.3152               | 0.8222               |
+> | New Uwi                 | 0.0477  | 0.1469  | 0.9634            | 0.1000             | 0.2650              | 0.4190            | 1.0000            | 0.0000             | 0.2606                | 0.2793          | 0.0665          | 0.0838               | 0.7238               |
+> | Nganion                 | 0.8654  | 0.4504  | 0.8195            | 0.8757             | 0.6673              | 0.5978            | 0.2103            | 0.1720             | 0.4459                | 0.3382          | 0.8733          | 0.4190               | 0.2894               |
+> | Ngoque Blicri           | 0.1650  | 0.0000  | 0.6439            | 0.8185             | 0.6014              | 0.1676            | 0.0966            | 0.3781             | 0.0455                | 0.1862          | 0.4687          | 0.2328               | 0.1135               |
+> | Nkasland Cronestan      | 0.2039  | 0.2254  | 0.4217            | 0.4682             | 0.2450              | 0.3285            | 0.3277            | 0.3497             | 0.1775                | 0.2400          | 0.3365          | 0.0391               | 0.4203               |
+> | People's Land of Maneau | 0.8032  | 0.1797  | 0.7592            | 0.0000             | 0.1645              | 0.6034            | 0.1754            | 0.1791             | 0.3030                | 0.1807          | 0.2703          | 0.3631               | 0.6149               |
+> | Quewenia                | 0.5471  | 0.3433  | 0.9597            | 0.3958             | 0.4262              | 1.0000            | 0.2714            | 0.1791             | 0.1688                | 0.1324          | 0.2635          | 0.2235               | 0.7068               |
+> | Sobianitedrucy          | 1.0000  | 0.2826  | 0.4485            | 1.0000             | 0.3894              | 0.3448            | 0.5116            | 0.2075             | 0.3506                | 1.0000          | 0.5319          | 0.0758               | 0.2930               |
+> | Southern Ristan         | 0.5945  | 0.5344  | 0.8245            | 0.1615             | 0.2641              | 0.9721            | 0.3126            | 1.0000             | 1.0000                | 0.4079          | 0.4641          | 0.6983               | 0.7510               |
+> | Varijitri Isles         | 0.4658  | 0.0906  | 0.0997            | 0.4369             | 0.0709              | 0.0838            | 0.5446            | 0.3532             | 0.2424                | 0.1419          | 0.2452          | 0.0838               | 0.0206               |
+> | Xikong                  | 0.3555  | 0.3144  | 0.7738            | 0.3046             | 0.2593              | 0.3754            | 0.0526            | 0.3184             | 0.2606                | 0.0000          | 0.4787          | 0.4190               | 0.4019               |
+>
 > Index’s Entropy:
-> ![](/Users/yifanxiao/Desktop/Index_Entropy_ShootingFW.png)
+>
+> | **90s**   | **Gls**   | **Standard SoT%** | **Standard Sh/90** | **Standard SoT/90** | **Standard G/Sh** | **Standard Dist** | **Performance PK** | **Performance PKatt** | **Standard FK** | **Expected xG** | **Expected npxG/Sh** | **Expected np:G-xG** |
+> | --------- | --------- | ----------------- | ------------------ | ------------------- | ----------------- | ----------------- | ------------------ | --------------------- | --------------- | --------------- | -------------------- | -------------------- |
+> | 0.9182395 | 0.9191152 | 0.9626163         | 0.9225522          | 0.9278407           | 0.948894          | 0.9400071         | 0.9257322          | 0.9244672             | 0.9248543       | 0.9387893       | 0.8934433            | 0.947453             |
+>
 > Entropy weight:
-> ![](/Users/yifanxiao/Desktop/Entropy_weight_ShootingFW.png)
+>
+> | **90s**     | **Gls**     | **Standard SoT%** | **Standard Sh/90** | **Standard SoT/90** | **Standard G/Sh** | **Standard Dist** | **Performance PK** | **Performance PKatt** | **Standard FK** | **Expected xG** | **Expected npxG/Sh** | **Expected np:G-xG** |
+> | ----------- | ----------- | ----------------- | ------------------ | ------------------- | ----------------- | ----------------- | ------------------ | --------------------- | --------------- | --------------- | -------------------- | -------------------- |
+> | 0.006767268 | 0.006695274 | 0.003105634       | 0.006412595        | 0.005977329         | 0.004240773       | 0.004974539       | 0.006150912        | 0.00625503            | 0.006223172     | 0.005075008     | 0.008801567          | 0.004359822          |
 
 ### <u>Modelling and team selection</u>
 
@@ -164,21 +225,21 @@ d. Adding expenses on foreign players to get the total (per Capita) team expense
 
 e. From 2021, each term used in calculation should be derived by multiplying the corresponding term of the last year inflation factor. 
 
-| Year | Per Capita     Total Expense (∂) | Per Capita     Staff     Costs (∂) | Per Capita     Other     Expenses (∂) | Expense(without team) | Team Expense | Adjusted Team Expense | Expense for foreign players | Total Team Expense |
-| ---- | -------------------------------- | ---------------------------------- | ------------------------------------- | --------------------- | ------------ | --------------------- | --------------------------- | ------------------ |
-| 2020 | ∂ 279.92                         | ∂ 189.07                           | ∂ 90.85                               | ∂ 148.69              | ∂ 131.23     | ∂ 131.23              | -                           | -                  |
-| 2021 | ∂ 285.54                         | ∂ 192.86                           | ∂ 92.68                               | ∂ 151.67              | ∂ 133.86     | ∂ 133.86              | -                           | -                  |
-| 2022 | ∂ 293.92                         | ∂ 198.52                           | ∂ 95.40                               | ∂ 156.12              | ∂ 137.79     | ∂ 151.57              | ∂ 15.08                     | ∂ 166.65           |
-| 2023 | ∂ 301.53                         | ∂ 203.66                           | ∂ 97.87                               | ∂ 160.17              | ∂ 141.36     | ∂ 155.50              | ∂ 15.40                     | ∂ 170.90           |
-| 2024 | ∂ 309.11                         | ∂ 208.78                           | ∂ 100.33                              | ∂ 164.20              | ∂ 144.92     | ∂ 159.41              | ∂ 15.72                     | ∂ 175.13           |
-| 2025 | ∂ 318.54                         | ∂ 215.15                           | ∂ 103.39                              | ∂ 169.20              | ∂ 149.34     | ∂ 149.34              | ∂ 16.13                     | ∂ 165.47           |
-| 2026 | ∂ 331.93                         | ∂ 224.19                           | ∂ 107.73                              | ∂ 176.32              | ∂ 155.61     | ∂ 155.61              | ∂ 16.74                     | ∂ 172.35           |
-| 2027 | ∂ 335.73                         | ∂ 226.76                           | ∂ 108.97                              | ∂ 178.33              | ∂ 157.39     | ∂ 157.39              | ∂ 16.86                     | ∂ 174.25           |
-| 2028 | ∂ 343.09                         | ∂ 231.74                           | ∂ 111.36                              | ∂ 182.25              | ∂ 160.85     | ∂ 160.85              | ∂ 17.16                     | ∂ 178.01           |
-| 2029 | ∂ 347.59                         | ∂ 234.78                           | ∂ 112.82                              | ∂ 184.64              | ∂ 162.96     | ∂ 162.96              | ∂ 17.31                     | ∂ 180.27           |
-| 2030 | ∂ 360.75                         | ∂ 243.66                           | ∂ 117.09                              | ∂ 191.63              | ∂ 169.13     | ∂ 169.13              | ∂ 17.89                     | ∂ 187.02           |
-| 2031 | ∂ 368.32                         | ∂ 248.77                           | ∂ 119.55                              | ∂ 195.65              | ∂ 172.67     | ∂ 172.67              | ∂ 18.19                     | ∂ 190.87           |
-| 2032 | ∂ 379.60                         | ∂ 256.39                           | ∂ 123.21                              | ∂ 201.64              | ∂ 177.96     | ∂ 177.96              | ∂ 18.67                     | ∂ 196.63           |
+| Year | Per Capita     Total Expense (∂) | Per Capita     Staff     Costs (∂) | Per Capita     Other     Expenses (∂) | Expense(without team) (∂) | Team Expense (∂) | Adjusted Team Expense (∂) | Expense for foreign players (∂) | Total Team Expense (∂) |
+| ---- | -------------------------------- | ---------------------------------- | ------------------------------------- | ------------------------- | ---------------- | ------------------------- | ------------------------------- | ---------------------- |
+| 2020 | 279.92                           | 189.07                             | 90.85                                 | 148.69                    | 131.23           | 131.23                    | -                               | -                      |
+| 2021 | 285.54                           | 192.86                             | 92.68                                 | 151.67                    | 133.86           | 133.86                    | -                               | -                      |
+| 2022 | 293.92                           | 198.52                             | 95.40                                 | 156.12                    | 137.79           | 151.57                    | 15.08                           | 166.65                 |
+| 2023 | 301.53                           | 203.66                             | 97.87                                 | 160.17                    | 141.36           | 155.50                    | 15.40                           | 170.90                 |
+| 2024 | 309.11                           | 208.78                             | 100.33                                | 164.20                    | 144.92           | 159.41                    | 15.72                           | 175.13                 |
+| 2025 | 318.54                           | 215.15                             | 103.39                                | 169.20                    | 149.34           | 149.34                    | 16.13                           | 165.47                 |
+| 2026 | 331.93                           | 224.19                             | 107.73                                | 176.32                    | 155.61           | 155.61                    | 16.74                           | 172.35                 |
+| 2027 | 335.73                           | 226.76                             | 108.97                                | 178.33                    | 157.39           | 157.39                    | 16.86                           | 174.25                 |
+| 2028 | 343.09                           | 231.74                             | 111.36                                | 182.25                    | 160.85           | 160.85                    | 17.16                           | 178.01                 |
+| 2029 | 347.59                           | 234.78                             | 112.82                                | 184.64                    | 162.96           | 162.96                    | 17.31                           | 180.27                 |
+| 2030 | 360.75                           | 243.66                             | 117.09                                | 191.63                    | 169.13           | 169.13                    | 17.89                           | 187.02                 |
+| 2031 | 368.32                           | 248.77                             | 119.55                                | 195.65                    | 172.67           | 172.67                    | 18.19                           | 190.87                 |
+| 2032 | 379.60                           | 256.39                             | 123.21                                | 201.64                    | 177.96           | 177.96                    | 18.67                           | 196.63                 |
 
 Predicted inflation rates, populations for Rarita, expenses for foreign players:
 
@@ -197,18 +258,40 @@ Predicted inflation rates, populations for Rarita, expenses for foreign players:
 | 2031 | 2.10%                 |
 | 2032 | 3.06%                 |
 
-![](/Users/yifanxiao/Desktop/population.png)
+<p align="center">
+<img src="population.png"  width="500" height="310"/>
+</p>
+
 ![population estimate](/Users/yifanxiao/Desktop/populaion_estimate.png) ![foreign players](/Users/yifanxiao/Desktop/expense_foreignplayers.png)
 
 ### <u>Revenue</u>
 
 Revenues are predicted with the similar process with expenses projection. The only difference is that there is no revenue from foreign players.
-![](/Users/yifanxiao/Desktop/revenue_prediction.png)
+
+| Year | Per Capita     Total Revenue (∂) | Per Capita     Matchday (∂) | Per Capita     Broadcast (∂) | Per Capita     Commercial (∂) | Per Capita Revenue (without team)  (∂) | Per Capita Team Revenue (∂) | Adjusted factor | Adjusted Team Reveue (∂) | Per Capita Total Team Revenue (∂) |
+| ---- | -------------------------------- | --------------------------- | ---------------------------- | ----------------------------- | -------------------------------------- | --------------------------- | --------------- | ------------------------ | --------------------------------- |
+| 2022 | 333.36                           | 50.81                       | 130.98                       | 151.57                        | 171.29                                 | 162.07                      | 85%             | 137.76                   | 117.10                            |
+| 2023 | 341.99                           | 52.12                       | 134.37                       | 155.49                        | 175.72                                 | 166.27                      | 90%             | 149.64                   | 134.68                            |
+| 2024 | 350.59                           | 53.44                       | 137.75                       | 159.40                        | 180.14                                 | 170.45                      | 95%             | 161.93                   | 153.83                            |
+| 2025 | 361.29                           | 55.07                       | 141.95                       | 164.27                        | 185.64                                 | 175.65                      | 100%            | 175.65                   | 175.65                            |
+| 2026 | 376.47                           | 57.38                       | 147.92                       | 171.17                        | 193.44                                 | 183.03                      | 100%            | 183.03                   | 183.03                            |
+| 2027 | 380.78                           | 58.04                       | 149.61                       | 173.13                        | 195.65                                 | 185.13                      | 100%            | 185.13                   | 185.13                            |
+| 2028 | 389.14                           | 59.31                       | 152.90                       | 176.93                        | 199.95                                 | 189.19                      | 100%            | 189.19                   | 189.19                            |
+| 2029 | 394.24                           | 60.09                       | 154.90                       | 179.25                        | 202.57                                 | 191.67                      | 100%            | 191.67                   | 191.67                            |
+| 2030 | 409.16                           | 62.36                       | 160.77                       | 186.03                        | 210.24                                 | 198.93                      | 100%            | 198.93                   | 198.93                            |
+| 2031 | 417.75                           | 63.67                       | 164.14                       | 189.94                        | 214.65                                 | 203.10                      | 100%            | 203.10                   | 203.10                            |
+| 2032 | 430.54                           | 65.62                       | 169.16                       | 195.75                        | 221.22                                 | 209.32                      | 100%            | 209.32                   | 209.32                            |
 
 ### <u>Net income</u>
 
 After predicting expenses and revenues the net income over the next 10 year are also generated:
-![](/Users/yifanxiao/Desktop/profit.png)
+
+| Year                                   | 2022 | 2023          | 2024          | 2025          | 2026         | 2027         | 2028         | 2029         | 2030         | 2031         | 2032         |
+| -------------------------------------- | ---- | ------------- | ------------- | ------------- | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ | ------------ |
+| Revenue  (per Capita) (∂)              | 0.00 | 117.10        | 134.68        | 153.83        | 175.65       | 183.03       | 185.13       | 189.19       | 191.67       | 198.93       | 203.10       |
+| Expense  (per Capita) (∂)              | 0.00 | 166.65        | 170.90        | 175.13        | 165.47       | 172.35       | 174.25       | 178.01       | 180.27       | 187.02       | 190.87       |
+| Operating  profit/Loss(per Capita) (∂) | 0.00 | -49.55        | -36.22        | -21.30        | 10.18        | 10.68        | 10.87        | 11.18        | 11.40        | 11.91        | 12.23        |
+| Operating  profit/Loss (∂)             | 0.00 | -646957097.35 | -474932085.92 | -280456918.82 | 134614338.16 | 141805660.81 | 144978327.09 | 149744860.70 | 153314623.11 | 160784745.28 | 165858625.89 |
 
 Initial losses existed for first three years after construction of the national team. In addition to ∂ 995000000 of Rarita’s one-time fund the team still needs the fund of ∂305836631.64 to cover these excess expenses. A six-year loan can be made in 2022 to raise the capital needed. 
 
@@ -275,11 +358,12 @@ Detailed dimensions for historical expense data are not provided, so whether the
 ### <u>sensitivity test of annual percentage rate and discount rate</u>
 
 * For discount rate, the NPV of net income would be within 10% of the projection if it is within (1.47%, 7.63%)
-
 * For risk-free rate, the NPV of net income would be within 10% of the projection if it is within (0%,5.65%)
-
 * The choices of risk-free rate and discount rate can influence the projected NPV for the national team over 2022-2031. There is about a range of ∂118M in the NPV by varying the discount rate between 1.5% and 7.5%. There is about a range of ∂121M in the NPV by varying the annual percentage rate between 1% and 6%.
-    ![](/Users/yifanxiao/Desktop/sensitivity.png)
+
+<p align="center">
+<img src="sensitivity.png"  width="800" height="100"/>
+</p>
 
 ## Data and Data Limitation
 
