@@ -427,12 +427,12 @@ Data used are provided by SOA: [2022 SOA Challenge]( https://www.soa.org/researc
 
 ---
 
-测试Overall, the team we selected has the expected probability of success of about 70% which is not bad. Although assembling the national team seemly will not earn so much money the potential economic growth that the construction of such a competitive team will bring is a more significant consideration.
+Overall, the team we selected has the expected probability of success of about 70% which is not bad. Although assembling the national team seemly will not earn so much money the potential economic growth that the construction of such a competitive team will bring is a more significant consideration.
 
 ---
 
 > Feel free to see [report outline](group_outline_group_cool.docx), [full report](Team_Cool_Report_of_Construction_of_the_Competitive_national_football_team_for_Rarita.docx), [team selected and corresponding costs](team-selected.csv), and [R codes for project](Team_Cool_codes_RMarkdown.Rmd).
 > <p align="center">
-> <img src="thanks.gif"  width="300" height="200"/>
+> <img src="thanks.gif"  width="500" height="400"/>
 > </p>
 
