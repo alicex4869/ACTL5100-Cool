@@ -437,8 +437,11 @@ It seems no exaggeration to say that excellent national sports results can enhan
 * 2029-2032: Keep monitoring (revenue and growth on GDP) and lend the substitutes to other countries, if possible, to achieve extra revenue   
    
 Source of revenues (for next ten years): 
+
 First, the gate receipts and licensing are the most basic source of income, accounting for approximately 15%, and catering sales on the matchday can also increase the revenues. 
+
 Second, the broadcast revenue is the key to improving the national team’s profit. According to the prediction, teams make 40% of their money by selling rights to broadcast the Football Games. If the Rarita national team has an outstanding performance, they will receive a hugely disproportionate share of the televising revenues. Because of the power of football, the TV revenue is relatively stable to afford the team overhead. 
+
 The third category is the commercial income, including advertising endorsement, franchise, sales of peripheral products, corporate sponsorship and so on. This part of the revenue is the most closely correlated with the ranking in FSA and the popularity of the players. More sponsorship can be attracted by the excellent performance so that the team will obtain more revenue in this part.
   
 
