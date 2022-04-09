@@ -58,16 +58,28 @@ Rarita needs 25 footballers to build a formative national team, including 11 sta
 To build the model to help us select team we mainly use the tournament information (which has the results) provided. We found that defensing and passing data only include the information of 2021 tournament. Although there are some 2020 data of shooting performance however there exists high proportion of missing for some metrics (e.g. Standard Dist has 100% of missing) therefore we only use data for 2021 tournament to build model in this project.
 
 > Missing data for shooting and goalkeeping:
-> ![](/Users/yifanxiao/Desktop/missing_data_shooting.png)
-> ![](/Users/yifanxiao/Desktop/missing_data_goalkeep.png)
+>
+> <p align="center">
+> <img src="missing_data_shooting.png"  width="650" height="400"/>
+> </p>
+>
+> <p align="center">
+> <img src="missing_data_goalkeep.png"  width="650" height="400"/>
+> </p>
 
 **2.variable selection**
 
 We first checked the correlations and analyzed the meaning of metrics to reduce the dimensions. Through analysis of correlations and meanings we remove some metrics which have similar representatives with another metric(s).
 
 > Correlation matrix plots:
-> ![](/Users/yifanxiao/Desktop/shooting.png) ![](/Users/yifanxiao/Desktop/passing.png)
-> ![](/Users/yifanxiao/Desktop/defense.png) ![](/Users/yifanxiao/Desktop/goalkeeping.png)
+>
+> <p align="center">
+> <img src="passing.png"  width="400" height="400"/>
+> </p>
+>
+> <p align="center">
+> <img src="goalkeeping.png"  width="400" height="400"/>
+> </p>
 
 
 
@@ -102,7 +114,7 @@ After the data manipulation procedures, the dimension of measurement for each na
 Rather than directly choosing players from league data based on scores, we did regression analysis in advance to discover the relative significance of scores for each position on the overall rank. We replace the rank by 1 and 0 with 1 indicates successfully achieving top 10 in FSA and implement logistic regression to derive success rate. The relative significance of variables is based on AIC stepwise selection. In addition, we checked the feature importance by random forest method which also provide a similar result on variable significance. The variables chosen for modelling are ShootingFW, PassingFW, PassingDF, DefenseMF, and GoalkeepingGK.
 
 <p align="center">
-<img src=" feature_importance.png "  width="200" height="300"/>
+<img src=" feature_importance.png "  width="300" height="300"/>
 </p>
 
 
