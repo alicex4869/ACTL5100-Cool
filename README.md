@@ -117,8 +117,37 @@ Rather than directly choosing players from league data based on scores, we did r
 <img src=" feature_importance.png "  width="300" height="300"/>
 </p>
 
-
 The selection of Rarita team is generally based on scores of ShootingFW, PassingDF, DefenseMF, and GoalkeepingGK for corresponding positions. We choose the players with top 5% scores in league from Rarita and then hire top players from other nations if there are insufficient players in the team. 
+
+| Player         | Nation                  | Pos  |
+| -------------- | ----------------------- | ---- |
+| K. Adong       | Dosqaly                 | FWMF |
+| F. Akongo      | Nganion                 | MFFW |
+| A. Perez       | Rarita                  | FW   |
+| V. Zhao        | Rarita                  | MF   |
+| H. Jew         | Landsfupua              | GK   |
+| L. De Wit      | Greri Landmoslands      | FW   |
+| L. Ndyanabo    | Imaar Vircoand          | FWMF |
+| D. Tukamuhebwa | People's Land of Maneau | FW   |
+| H. Makumbi     | Rarita                  | FW   |
+| F. Acayo       | Rarita                  | DF   |
+| H. Azizi       | Rarita                  | DF   |
+| K. Musah       | Rarita                  | DF   |
+| P. Murmu       | Rarita                  | DF   |
+| R. Mensah      | Rarita                  | DF   |
+| W. Mbaziira    | Rarita                  | DF   |
+| X. Takagi      | Rarita                  | DF   |
+| Z. Kakai       | Rarita                  | MFDF |
+| N. Bondarenko  | People's Land of Maneau | FWMF |
+| U. Angella     | People's Land of Maneau | MF   |
+| M. Ludwig      | Rarita                  | DFMF |
+| O. Tshuma      | Rarita                  | DFMF |
+| V. Sultan      | Rarita                  | DFMF |
+| B. Ayuba       | Rarita                  | MF   |
+| F. Akumu       | Rarita                  | GK   |
+| W. Nasiru      | Rarita                  | GK   |
+
+
 
 > Players selected:
 
