@@ -171,7 +171,7 @@ After the data manipulation procedures, the dimension of measurement for each na
 Rather than directly choosing players from league data based on scores, we did regression analysis in advance to discover the relative significance of scores for each position on the overall rank. We replace the rank by 1 and 0 with 1 indicates successfully achieving top 10 in FSA and implement logistic regression to derive success rate. The relative significance of variables is based on AIC stepwise selection. In addition, we checked the feature importance by random forest method which also provide a similar result on variable significance. The variables chosen for modelling are ShootingFW, PassingFW, PassingDF, DefenseMF, and GoalkeepingGK.
 
 <p align="center">
-<img src=" feature_importance.png "  width="400" height="400"/>
+<img src="feature_importance.png"  width="400" height="400"/>
 </p>
 
 The selection of Rarita team is generally based on scores of ShootingFW, PassingDF, DefenseMF, and GoalkeepingGK for corresponding positions. We choose the players with top 5% scores in league from Rarita and then hire top players from other nations if there are insufficient players in the team. 
