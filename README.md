@@ -7,7 +7,7 @@
 **Team Member: YIXUAN WANG, WENYAN REN, BIHAN SHEN, YIFAN XIAO, YIFAN LI**
 
 <p align="center">
-<img src="football.gif"  width="700" height="500"/>
+<img src="football.gif"  width="650" height="450"/>
 </p>
 
 
@@ -163,9 +163,24 @@ c. Adjusting with adjusting factors (1.1 for first 3 years and 1 afterwards)
 d. Adding expenses on foreign players to get the total (per Capita) team expense
 
 e. From 2021, each term used in calculation should be derived by multiplying the corresponding term of the last year inflation factor. 
-![](/Users/yifanxiao/Desktop/expense_prediction.png)
 
-> Predicted inflation rates, populations for Rarita, expenses for foreign players:
+| Year | Per Capita     Total Expense (∂) | Per Capita     Staff     Costs (∂) | Per Capita     Other     Expenses (∂) | Expense(without team) | Team Expense | Adjusted Team Expense | Expense for foreign players | Total Team Expense |
+| ---- | -------------------------------- | ---------------------------------- | ------------------------------------- | --------------------- | ------------ | --------------------- | --------------------------- | ------------------ |
+| 2020 | ∂ 279.92                         | ∂ 189.07                           | ∂ 90.85                               | ∂ 148.69              | ∂ 131.23     | ∂ 131.23              | -                           | -                  |
+| 2021 | ∂ 285.54                         | ∂ 192.86                           | ∂ 92.68                               | ∂ 151.67              | ∂ 133.86     | ∂ 133.86              | -                           | -                  |
+| 2022 | ∂ 293.92                         | ∂ 198.52                           | ∂ 95.40                               | ∂ 156.12              | ∂ 137.79     | ∂ 151.57              | ∂ 15.08                     | ∂ 166.65           |
+| 2023 | ∂ 301.53                         | ∂ 203.66                           | ∂ 97.87                               | ∂ 160.17              | ∂ 141.36     | ∂ 155.50              | ∂ 15.40                     | ∂ 170.90           |
+| 2024 | ∂ 309.11                         | ∂ 208.78                           | ∂ 100.33                              | ∂ 164.20              | ∂ 144.92     | ∂ 159.41              | ∂ 15.72                     | ∂ 175.13           |
+| 2025 | ∂ 318.54                         | ∂ 215.15                           | ∂ 103.39                              | ∂ 169.20              | ∂ 149.34     | ∂ 149.34              | ∂ 16.13                     | ∂ 165.47           |
+| 2026 | ∂ 331.93                         | ∂ 224.19                           | ∂ 107.73                              | ∂ 176.32              | ∂ 155.61     | ∂ 155.61              | ∂ 16.74                     | ∂ 172.35           |
+| 2027 | ∂ 335.73                         | ∂ 226.76                           | ∂ 108.97                              | ∂ 178.33              | ∂ 157.39     | ∂ 157.39              | ∂ 16.86                     | ∂ 174.25           |
+| 2028 | ∂ 343.09                         | ∂ 231.74                           | ∂ 111.36                              | ∂ 182.25              | ∂ 160.85     | ∂ 160.85              | ∂ 17.16                     | ∂ 178.01           |
+| 2029 | ∂ 347.59                         | ∂ 234.78                           | ∂ 112.82                              | ∂ 184.64              | ∂ 162.96     | ∂ 162.96              | ∂ 17.31                     | ∂ 180.27           |
+| 2030 | ∂ 360.75                         | ∂ 243.66                           | ∂ 117.09                              | ∂ 191.63              | ∂ 169.13     | ∂ 169.13              | ∂ 17.89                     | ∂ 187.02           |
+| 2031 | ∂ 368.32                         | ∂ 248.77                           | ∂ 119.55                              | ∂ 195.65              | ∂ 172.67     | ∂ 172.67              | ∂ 18.19                     | ∂ 190.87           |
+| 2032 | ∂ 379.60                         | ∂ 256.39                           | ∂ 123.21                              | ∂ 201.64              | ∂ 177.96     | ∂ 177.96              | ∂ 18.67                     | ∂ 196.63           |
+
+Predicted inflation rates, populations for Rarita, expenses for foreign players:
 
 | Year | Annual Inflation rate |
 | ---- | --------------------- |
@@ -284,5 +299,7 @@ Overall, the team we selected has the expected probability of success of about 7
 ---
 
 > Feel free to see [report outline](group outline_group cool.docx), [full report](Team Cool_Report of Construction of the Competitive national football team for Rarita.docx), [team selected and corresponding costs](team-selected.csv), and [R codes for project](Team Cool_codes_RMarkdown.Rmd).
-> ![](/Users/yifanxiao/Desktop/thanks.gif)
+> <p align="center">
+> <img src="thanks.gif"  width="300" height="200"/>
+> </p>
 
