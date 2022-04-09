@@ -36,9 +36,19 @@ Football has been a heavily watched sport worldwide and the success of the natio
 
 The average rate for nominal spot rates of risk-free bonds mature in 2032 which is higher than that of earlier maturity hence being more conservative.
 
-<p align="center">
-<img src=" discount_rate_estimate.png "  width="200" height="300"/>
-</p>
+| average  risk-free rate | Maurity year |
+| ----------------------- | ------------ |
+| 3.31%                   | 2022         |
+| 3.49%                   | 2023         |
+| 3.66%                   | 2024         |
+| 3.81%                   | 2025         |
+| 3.94%                   | 2026         |
+| 4.06%                   | 2027         |
+| 4.16%                   | 2028         |
+| 4.25%                   | 2029         |
+| 4.33%                   | 2030         |
+| 4.39%                   | 2031         |
+| 4.45%                   | 2032         |
 
 
 * Annual percentage rate for 6-year loan - 2.8%
